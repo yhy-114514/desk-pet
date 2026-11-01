@@ -1,0 +1,61 @@
+# 打包配置：Windows（NSIS）+ macOS（dmg），产物落 release/
+# 渲染产物（out/renderer）里已经内联了 atlas 图，assets/ 源目录不进包——
+# 它是 1.6G 的中间产物，进包只会让安装器变成几百兆。
+appId: com.deskpet.whalegirl
+productName: 鲸鱼娘
+artifactName: desk-pet-${version}-setup.${ext}
+directories:
+  output: release
+  buildResources: build
+files:
+  - out/**
+  - resources/**
+  - package.json
+# 原生模块（uiohook-napi / koffi）必须解包成真实文件才能被 dlopen；
+# 托盘图标同理，asar 里的路径虽然能读，解包更省心。
+asarUnpack:
+  - resources/**
+  - '**/*.node'
+# 依赖都是 N-API 预编译包，不需要也不应该跑 node-gyp 重编（本机没装 VS 构建工具，
+# macOS 上也不需要 Xcode 命令行工具——uiohook-napi / koffi 的 prebuilds 都是现成的）
+npmRebuild: false
+win:
+  target:
+    - nsis
+  icon: build/icon.png
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  shortcutName: 鲸鱼娘
+mac:
+  # 只出 dmg：用户拖进「应用程序」就能用，zip 是给自动更新用的，我们暂时没有
+  target:
+    - target: dmg
+      arch:
+        - arm64
+        - x64
+  category: public.app-category.entertainment
+  icon: build/icon.png
+  # 不分架构的话两个包同名，后一个会把前一个覆盖掉
+  artifactName: desk-pet-${version}-mac-${arch}.${ext}
+  # 不做开发者签名（没有 Apple 开发者账号，$99/年），但**仍要做 ad-hoc 签名**：
+  # Apple Silicon 上所有可执行文件必须有签名，完全裸奔的 .app 一启动就被系统 kill
+  # （报 "killed: 9"，什么都没有）。`-` 就是 ad-hoc，不需要任何证书。
+  # 代价是用户第一次打开要「右键 → 打开」绕过 Gatekeeper，之后正常双击。
+  identity: '-'
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  extendInfo:
+    # macOS 上光有 setPermissionRequestHandler 不够：没有这个键，
+    # 进程发起麦克风请求时系统直接拒绝（ASR 语音输入会用不了）
+    NSMicrophoneUsageDescription: 语音输入要把你说的话转成文字，需要麦克风权限。
+dmg:
+  # 安装界面允许把 app 拖进 Applications
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications

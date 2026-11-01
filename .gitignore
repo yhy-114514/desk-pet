@@ -1,0 +1,18 @@
+node_modules/
+out/
+dist/
+*.log
+.tmp/
+release/
+.tmp-*.png
+
+# 素材制作的中间产物：合起来 1.4G，构建**用不到**。
+# 渲染产物只内联这三样：assets/atlas/（图集）、assets/hitmask.json、assets/manifest.json。
+# 下面的东西都是「重新生成图集」时才会碰的原料，留在本地磁盘上就行，
+# 别跟进仓库——推送会多出十几分钟，CI 每次 checkout 也要多拉 1.4G。
+assets/p1-cut/
+assets/p1-*/
+assets/sprites/
+
+# 本地随手放的角色卡 / 参考图（不入库，免得不小心把私人素材推上去）
+piupiu/

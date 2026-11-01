@@ -1,0 +1,4 @@
+# shell 脚本一律存成 LF：Windows 下 checkout 成 CRLF 后，macOS / Linux 执行会报
+# `bad interpreter: /bin/bash^M`。发布脚本只在本地跑，但这台机器是 Windows，
+# 不锁死的话下一次 checkout 就变成 CRLF 了。
+*.sh text eol=lf

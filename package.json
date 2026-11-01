@@ -1,0 +1,37 @@
+{
+  "name": "desk-pet",
+  "version": "0.1.0",
+  "description": "鲸鱼娘桌宠 — Electron + TypeScript + PixiJS v8",
+  "main": "./out/main/index.js",
+  "author": "BlueWhale",
+  "license": "MIT",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "dist": "npm run build && electron-builder --win --publish never",
+    "dist:mac": "npm run build && electron-builder --mac --publish never",
+    "pack": "npm run build && electron-builder --win --dir",
+    "pack:mac": "npm run build && electron-builder --mac --dir",
+    "start": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json --composite false && tsc --noEmit -p tsconfig.web.json --composite false",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "adm-zip": "^0.6.1",
+    "koffi": "^3.3.3",
+    "msedge-tts": "^2.1.0",
+    "pixi.js": "^8.22.0",
+    "uiohook-napi": "^1.5.5"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.5.8",
+    "@types/node": "^26.6.5",
+    "electron": "^44.9.0",
+    "electron-builder": "^26.15.3",
+    "electron-vite": "^6.0.0",
+    "ffmpeg-static": "^5.3.0",
+    "sharp": "^0.35.5",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}
